@@ -12,7 +12,9 @@
         content="ie=edge"
     >
     <title>Document</title>
+
     <script src="https://cdn.bootcss.com/three.js/r59/three.js"></script>
+    <script src="./stats.js"></script>
     <!-- <script src="./three.js"></script> -->
 </head>
 
@@ -22,10 +24,21 @@
         width="400px"
         height="300px"
     ></canvas>
+    <button
+        id="stopBtn"
+        onclick="stop()"
+    >Stop</button>
 </body>
 
 <script>
     function init(params) {
+        stat = new Stats();
+        stat.domElement.style.position = 'absolute';
+        stat.domElement.style.right = '0px';
+        stat.domElement.style.top = '0px';
+        document.body.appendChild(stat.domElement);
+
+
         // renderer
         let renderer = new THREE.WebGLRenderer({
             canvas: document.getElementById("mainCanvas")
@@ -56,12 +69,34 @@
         var cube4 = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1),
             material);
         scene.add(cube4);
-        id = setInterval(draw, 20)
+        // id = setInterval(draw, 20)
+
+        // function draw() {
+        //     cube4.rotation.y = (cube4.rotation.y + 0.01) % (Math.PI * 2);
+        //     renderer.render(scene, camera);
+        //     console.log('111')
+        // }
+
+
+        id = requestAnimationFrame(draw);
 
         function draw() {
+            stat.begin();
             cube4.rotation.y = (cube4.rotation.y + 0.01) % (Math.PI * 2);
             renderer.render(scene, camera);
-            console.log('111')
+            stat.end();
+            id = requestAnimationFrame(draw);
+        }
+
+
+
+    }
+
+    function stop() {
+        console.log(id, 'id')
+        if (id !== null) {
+            cancelAnimationFrame(id);
+            id = null;
         }
     }
 </script>
