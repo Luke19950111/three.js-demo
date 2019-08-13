@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="ie=edge"
+    >
+    <title>Document</title>
+    <script src="https://cdn.bootcss.com/three.js/r59/three.js"></script>
+    <!-- <script src="./three.js"></script> -->
+</head>
+
+<body onload="init()">
+    <canvas
+        id="mainCanvas"
+        width="400px"
+        height="300px"
+    ></canvas>
+</body>
+
+<script>
+    function init(params) {
+        // renderer
+        let renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById("mainCanvas")
+        });
+        renderer.setClearColor(0x000000);
+
+        // scene
+        let scene = new THREE.Scene();
+
+        // scene
+        // let camera = new THREE.PerspectiveCamera(45, 4 / 3, 1, 1000);
+        let camera = new THREE.OrthographicCamera(-2, 2, 1.5, -1.5, 1, 10);
+        camera.position.set(2, 2, 5);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        // add camera to scene
+        scene.add(camera);
+
+        // a cube in the scene
+        var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1, 2, 2, 3),
+            new THREE.MeshBasicMaterial({
+                color: 0xff0000,
+                wireframe: true
+            })
+        );
+
+        // scene.add(cube);
+
+        //球体
+        var sphere = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 30),
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                wireframe: true
+            })
+        );
+
+        // scene.add(sphere)
+
+        //圆、扇形
+        var cycle = new THREE.Mesh(new THREE.CircleGeometry(1, 30, Math.PI / 3, Math.PI / 3 * 4),
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                wireframe: true
+            })
+        );
+
+        // scene.add(cycle)
+
+        //圆柱、圆台
+        var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 1.2, 1, 30, 3, true),
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                wireframe: true
+            })
+        );
+
+        // scene.add(cylinder)
+
+        //圆环
+        var torus = new THREE.Mesh(new THREE.TorusGeometry(1, 0.2, 30, 50),
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                wireframe: true
+            })
+        );
+
+        // scene.add(torus)
+
+        var material = new THREE.MeshPhongMaterial({
+            color: 0xff0000,
+            specular: 0xffff00,
+            shininess: 100
+        });
+        var xx = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            wireframe: true
+        })
+        var sphere1 = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 30), xx);
+
+        // scene.add(sphere1)
+
+        var ii = new THREE.MeshNormalMaterial()
+        var cube2 = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1),
+            ii
+        );
+        // scene.add(cube2)
+
+
+        var texture = THREE.ImageUtils.loadTexture('./img/black.png', {}, function () {
+            renderer.render(scene, camera);
+        });
+        var material = new THREE.MeshBasicMaterial({
+            map: texture
+        });
+        var cube4 = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1),
+            material);
+        scene.add(cube4);
+
+        renderer.render(scene, camera);
+    }
+</script>
+
+</html>
