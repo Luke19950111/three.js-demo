@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="ie=edge"
+    >
+    <title>Document</title>
+    <script src="https://cdn.bootcss.com/three.js/r59/three.js"></script>
+    <!-- <script src="./three.js"></script> -->
+</head>
+
+<body onload="init()">
+    <canvas
+        id="mainCanvas"
+        width="400px"
+        height="300px"
+    ></canvas>
+</body>
+
+<script>
+    function init(params) {
+        // renderer
+        let renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById("mainCanvas")
+        });
+        renderer.setClearColor(0x000000);
+
+        // scene
+        let scene = new THREE.Scene();
+
+        // scene
+        // let camera = new THREE.PerspectiveCamera(45, 4 / 3, 1, 1000);
+        let camera = new THREE.OrthographicCamera(-2, 2, 1.5, -1.5, 1, 10);
+        camera.position.set(2, 2, 5);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        // add camera to scene
+        scene.add(camera);
+
+        renderer.render(scene, camera);
+
+
+        var texture = THREE.ImageUtils.loadTexture('./img/black.png', {}, function () {
+            renderer.render(scene, camera);
+        });
+        var material = new THREE.MeshBasicMaterial({
+            map: texture
+        });
+        var cube4 = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1),
+            material);
+        scene.add(cube4);
+        id = setInterval(draw, 20)
+
+        function draw() {
+            cube4.rotation.y = (cube4.rotation.y + 0.01) % (Math.PI * 2);
+            renderer.render(scene, camera);
+            console.log('111')
+        }
+    }
+</script>
+
+</html>
