@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="ie=edge"
+    >
+    <title>Document</title>
+
+    <!-- <script src="https://cdn.bootcss.com/three.js/r59/three.js"></script> -->
+    <script
+        type="text/javascript"
+        src="./js/three.js"
+    ></script>
+    <script
+        type="text/javascript"
+        src="./js/OBJLoader.js"
+    ></script>
+    <script
+        type="text/javascript"
+        src="./js/MTLLoader.js"
+    ></script>
+    <script src="./js/OrbitControls.js"></script>
+    <script src="./js/TrackballControls.js"></script>
+    <script src="./js/stats.js"></script>
+    <script src="./js/dat.Gui.min.js"></script>
+</head>
+
+<!-- <body onload="init()">
+    <canvas
+        id="mainCanvas"
+        width="800px"
+        height="600px"
+    ></canvas>
+</body> -->
+<body>
+    
+</body>
+<script>
+    var renderer
+    var scene
+    var camera
+    var mesh
+    var id
+    var controls
+    var stats = initStats()
+
+    function init(params) {
+        initScene()
+        initCamera()
+        initRender()
+        initLight()
+        initControls()
+        initContent()
+        initGui()
+
+        renderer.render(scene, camera)
+    }
+
+    //场景
+    function initScene(){
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050505);
+        // scene.fog = new THREE.FogExp2(0x050505, 0.005);
+    }
+
+    //相机
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.set(0, 90, 220);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        scene.add(camera)
+    }
+
+    //渲染器
+    function initRender() {
+        renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+    }
+
+    //灯光
+    function initLight() {
+        scene.add(new THREE.AmbientLight(0xffffff));
+        let spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(-40, -40, -40);
+        let spotLight2 = new THREE.SpotLight(0xffffff);
+        spotLight2.position.set(400, 800, 400);
+        scene.add(spotLight);
+        scene.add(spotLight2);
+    }
+
+    //控制器
+    function initControls() {
+        /* 地图控件 */
+        controls = new THREE.MapControls(camera, renderer.domElement);
+        /* 属性参数 */
+        controls.enableDamping = true;// 启用动态阻尼时需要一个动画循环
+        controls.dampingFactor = 0.30;
+        controls.screenSpacePanning = false;// 若为 true 则可以平移
+        // controls.maxDistance = 400;
+        // controls.minDistance = 100;
+        controls.maxPolarAngle = Math.PI / 2.2;
+        controls.autoRotate = false;
+    }
+
+    //调试插件
+
+    //场景中的内容
+    function initContent() {
+        let mtlLoader = new THREE.MTLLoader();
+        mtlLoader.load('./obj/kkk.mtl', function (materials) {
+            let objLoader = new THREE.OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.load('./obj/kkk.obj', function (object) {
+                scene.add(object);
+            });
+        });
+
+
+
+        var sphere = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 30),
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                wireframe: true
+            })
+        );
+
+        scene.add(sphere)
+
+
+        //坐标轴
+        let material1 = new THREE.LineBasicMaterial( { color: 0x0000ff } )
+        let geometry1 = new THREE.Geometry();
+        geometry1.vertices.push(new THREE.Vector3( 100, 0, 0) );
+        geometry1.vertices.push(new THREE.Vector3( 0, 0, 0) );
+        geometry1.vertices.push(new THREE.Vector3( 0, 100, 0) );
+        let line1 = new THREE.Line( geometry1, material1 )
+        scene.add(line1)
+        let material2 = new THREE.LineBasicMaterial( { color: 0xffffff } )
+        let geometry2 = new THREE.Geometry();
+        geometry2.vertices.push(new THREE.Vector3( 0, 0, 0) );
+        geometry2.vertices.push(new THREE.Vector3( 0, 0, 100) );
+        let line2 = new THREE.Line( geometry2, material2 )
+        scene.add(line2)
+
+    }
+
+    //调试插件
+    function initGui() {
+        guiControls = new function () {
+            this.screenSpacePanning = controls.screenSpacePanning;
+            this.autoRotate = controls.autoRotate;
+            this.rotateSpeed = controls.autoRotateSpeed;
+            this.reset = function () {
+                controls.reset();
+            };
+            this.getPolarAngle = function () {
+                alert('极坐标:'+controls.getPolarAngle());
+            };
+            this.getAzimuthalAngle = function () {
+                alert('方位角:'+controls.getAzimuthalAngle());
+            };
+        };
+        let gui = new dat.GUI();
+        gui.add(guiControls,'screenSpacePanning').onChange(function (e) {
+            controls.screenSpacePanning = e;
+        });
+        gui.add(guiControls,'autoRotate').onChange(function (e) {
+            controls.autoRotate = e;
+        });
+        gui.add(guiControls,'rotateSpeed').onChange(function (e) {
+            controls.autoRotateSpeed = e;
+        });
+        gui.add(guiControls,'reset');
+        gui.add(guiControls,'getPolarAngle');
+        gui.add(guiControls,'getAzimuthalAngle');
+    }
+
+    //性能插件
+    function initStats(){
+        let stats = new Stats()
+        document.body.appendChild(stats.domElement);
+        return stats;
+    }
+
+    //循环渲染
+    function animate(){
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+        controls.update()
+        stats.update()
+    }
+
+    // 初始加载
+    (function(){
+        init()
+        animate()
+    })()
+
+</script>
+
+</html>
