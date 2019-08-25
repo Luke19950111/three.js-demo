@@ -12,6 +12,11 @@
         content="ie=edge"
     >
     <title>Document</title>
+    <style>
+        body{
+            margin: 0;
+        }
+    </style>
 
     <!-- <script src="https://cdn.bootcss.com/three.js/r59/three.js"></script> -->
     <script
@@ -106,7 +111,7 @@
         controls.screenSpacePanning = false;// 若为 true 则可以平移
         // controls.maxDistance = 400;
         // controls.minDistance = 100;
-        controls.maxPolarAngle = Math.PI / 2.2;
+        // controls.maxPolarAngle = Math.PI / 2.2;
         controls.autoRotate = false;
     }
 
@@ -114,14 +119,48 @@
 
     //场景中的内容
     function initContent() {
-        let mtlLoader = new THREE.MTLLoader();
-        mtlLoader.load('./obj/kkk.mtl', function (materials) {
-            let objLoader = new THREE.OBJLoader();
-            objLoader.setMaterials(materials);
-            objLoader.load('./obj/kkk.obj', function (object) {
-                scene.add(object);
-            });
+        var group = new THREE.Group()
+
+        let objLoader = new THREE.OBJLoader();
+        // objLoader.setMaterials(materials);
+        objLoader.load('./obj/zhaobi.obj', function (object) {
+            object.name = 'zhaobi'
+            group.add(object);
         });
+        objLoader.load('./obj/southroom.obj', function (object) {
+            object.name = 'southroom'
+            group.add(object);
+        });
+        objLoader.load('./obj/southroomroof.obj', function (object) {
+            object.name = 'southroomroof'
+            group.add(object);
+        });
+        objLoader.load('./obj/stairs.obj', function (object) {
+            object.name = 'stairs'
+            group.add(object);
+        });
+        objLoader.load('./obj/passage.obj', function (object) {
+            object.name = 'passage'
+            group.add(object);
+        });
+        objLoader.load('./obj/mainf1.obj', function (object) {
+            object.name = 'mainf1'
+            group.add(object);
+        });
+        objLoader.load('./obj/mainf2.obj', function (object) {
+            object.name = 'mainf2'
+            group.add(object);
+        });
+        objLoader.load('./obj/roof.obj', function (object) {
+            object.name = 'roof'
+            group.add(object);
+        });
+        objLoader.load('./obj/ground.obj', function (object) {
+            object.name = 'ground'
+            group.add(object);
+        });
+
+        scene.add(group)
 
 
 
