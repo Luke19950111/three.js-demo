@@ -94,11 +94,11 @@
     function initLight() {
         scene.add(new THREE.AmbientLight(0xffffff));
         let spotLight = new THREE.SpotLight(0xffffff);
-        spotLight.position.set(-40, -40, -40);
-        let spotLight2 = new THREE.SpotLight(0xffffff);
-        spotLight2.position.set(400, 800, 400);
+        spotLight.position.set(400, 800, 400);
+        var pointLight = new THREE.PointLight( 0xfffff, 10, 100 );
+        pointLight.position.set( 0, 0, 0 );
+        scene.add( pointLight );
         scene.add(spotLight);
-        scene.add(spotLight2);
     }
 
     //控制器
@@ -113,6 +113,12 @@
         // controls.minDistance = 100;
         // controls.maxPolarAngle = Math.PI / 2.2;
         controls.autoRotate = false;
+        controls.enableZoom = true;
+	    controls.zoomSpeed = 2.0;
+        controls.minZoom = Infinity;
+	    controls.maxZoom = Infinity;
+        controls.enablePan = true;
+	    controls.panSpeed = 1.0;
     }
 
     //调试插件
@@ -122,40 +128,96 @@
         var group = new THREE.Group()
 
         let objLoader = new THREE.OBJLoader();
-        // objLoader.setMaterials(materials);
+        // var material = new THREE.MeshLambertMaterial({color: 0x5C3A21})
+        // objLoader.setMaterials(material);
         objLoader.load('./obj/zhaobi.obj', function (object) {
+            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            object.children.forEach(function (child) {
+                child.material = material;
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+            });
             object.name = 'zhaobi'
             group.add(object);
         });
         objLoader.load('./obj/southroom.obj', function (object) {
+            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            object.children.forEach(function (child) {
+                child.material = material;
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+            });
             object.name = 'southroom'
             group.add(object);
         });
         objLoader.load('./obj/southroomroof.obj', function (object) {
+            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            object.children.forEach(function (child) {
+                child.material = material;
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+            });
             object.name = 'southroomroof'
             group.add(object);
         });
         objLoader.load('./obj/stairs.obj', function (object) {
+            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            object.children.forEach(function (child) {
+                child.material = material;
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+            });
             object.name = 'stairs'
             group.add(object);
         });
         objLoader.load('./obj/passage.obj', function (object) {
+            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            object.children.forEach(function (child) {
+                child.material = material;
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+            });
             object.name = 'passage'
             group.add(object);
         });
         objLoader.load('./obj/mainf1.obj', function (object) {
+            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            object.children.forEach(function (child) {
+                child.material = material;
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+            });
             object.name = 'mainf1'
             group.add(object);
         });
         objLoader.load('./obj/mainf2.obj', function (object) {
+            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            object.children.forEach(function (child) {
+                child.material = material;
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+            });
+
             object.name = 'mainf2'
             group.add(object);
         });
         objLoader.load('./obj/roof.obj', function (object) {
+            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            object.children.forEach(function (child) {
+                child.material = material;
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+            });
             object.name = 'roof'
             group.add(object);
         });
         objLoader.load('./obj/ground.obj', function (object) {
+            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            object.children.forEach(function (child) {
+                child.material = material;
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+            });
             object.name = 'ground'
             group.add(object);
         });
