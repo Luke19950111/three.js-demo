@@ -16,6 +16,16 @@
         body{
             margin: 0;
         }
+        ol,li{
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        ol{
+            position: absolute;
+            top: 50px;
+            left: 10px;
+        }
     </style>
 
     <!-- <script src="https://cdn.bootcss.com/three.js/r59/three.js"></script> -->
@@ -45,7 +55,17 @@
     ></canvas>
 </body> -->
 <body>
-    
+    <ol>
+        <li id="roof"><button onClick="remove('roof')">隐藏屋顶</button><button onClick="add('roof')" style="display:none">显示屋顶</button></li>
+        <li id="mainf2"><button onClick="remove('mainf2')">隐藏二楼</button><button onClick="add('mainf2')" style="display:none">显示二楼</button></li>
+        <li id="mainf1"><button onClick="remove('mainf1')">隐藏一楼</button><button onClick="add('mainf1')" style="display:none">显示一楼</button></li>
+        <li id="southroomroof"><button onClick="remove('southroomroof')">隐藏南顶</button><button onClick="add('southroomroof')" style="display:none">显示南顶</button></li>
+        <li id="stairs"><button onClick="remove('stairs')">隐藏楼梯</button><button onClick="add('stairs')" style="display:none">显示楼梯</button></li>
+        <li id="passage"><button onClick="remove('passage')">隐藏过道</button><button onClick="add('passage')" style="display:none">显示过道</button></li>
+        <li id="southroom"><button onClick="remove('southroom')">隐藏南房</button><button onClick="add('southroom')" style="display:none">显示南房</button></li>
+        <li id="zhaobi"><button onClick="remove('zhaobi')">隐藏照壁</button><button onClick="add('zhaobi')" style="display:none">显示照壁</button></li>
+        <li id="ground"><button onClick="remove('ground')">隐藏地面</button><button onClick="add('ground')" style="display:none">显示地面</button></li>
+    </ol>
 </body>
 <script>
     var renderer
@@ -55,6 +75,7 @@
     var id
     var controls
     var stats = initStats()
+    var group
 
     function init(params) {
         initScene()
@@ -125,13 +146,13 @@
 
     //场景中的内容
     function initContent() {
-        var group = new THREE.Group()
+        group = new THREE.Group()
 
         let objLoader = new THREE.OBJLoader();
         // var material = new THREE.MeshLambertMaterial({color: 0x5C3A21})
         // objLoader.setMaterials(material);
         objLoader.load('./obj/zhaobi.obj', function (object) {
-            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
             object.children.forEach(function (child) {
                 child.material = material;
                 child.geometry.computeFaceNormals();
@@ -141,7 +162,7 @@
             group.add(object);
         });
         objLoader.load('./obj/southroom.obj', function (object) {
-            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
             object.children.forEach(function (child) {
                 child.material = material;
                 child.geometry.computeFaceNormals();
@@ -151,7 +172,7 @@
             group.add(object);
         });
         objLoader.load('./obj/southroomroof.obj', function (object) {
-            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
             object.children.forEach(function (child) {
                 child.material = material;
                 child.geometry.computeFaceNormals();
@@ -161,7 +182,7 @@
             group.add(object);
         });
         objLoader.load('./obj/stairs.obj', function (object) {
-            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
             object.children.forEach(function (child) {
                 child.material = material;
                 child.geometry.computeFaceNormals();
@@ -171,7 +192,7 @@
             group.add(object);
         });
         objLoader.load('./obj/passage.obj', function (object) {
-            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
             object.children.forEach(function (child) {
                 child.material = material;
                 child.geometry.computeFaceNormals();
@@ -181,7 +202,7 @@
             group.add(object);
         });
         objLoader.load('./obj/mainf1.obj', function (object) {
-            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
             object.children.forEach(function (child) {
                 child.material = material;
                 child.geometry.computeFaceNormals();
@@ -191,7 +212,7 @@
             group.add(object);
         });
         objLoader.load('./obj/mainf2.obj', function (object) {
-            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
             object.children.forEach(function (child) {
                 child.material = material;
                 child.geometry.computeFaceNormals();
@@ -202,7 +223,7 @@
             group.add(object);
         });
         objLoader.load('./obj/roof.obj', function (object) {
-            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
             object.children.forEach(function (child) {
                 child.material = material;
                 child.geometry.computeFaceNormals();
@@ -212,7 +233,7 @@
             group.add(object);
         });
         objLoader.load('./obj/ground.obj', function (object) {
-            var material = new THREE.MeshLambertMaterial({color: 0x584b42, side:THREE.DoubleSide});
+            var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
             object.children.forEach(function (child) {
                 child.material = material;
                 child.geometry.computeFaceNormals();
@@ -269,7 +290,7 @@
                 alert('方位角:'+controls.getAzimuthalAngle());
             };
         };
-        let gui = new dat.GUI();
+        var gui = new dat.GUI();
         gui.add(guiControls,'screenSpacePanning').onChange(function (e) {
             controls.screenSpacePanning = e;
         });
@@ -304,6 +325,30 @@
         init()
         animate()
     })()
+
+    function remove(room){
+        let rmBtn = document.getElementById(room).children[0]
+        let addBtn = document.getElementById(room).children[1]
+        rmBtn.style.display = 'none'
+        addBtn.style.display = 'block'
+        group.children.forEach((item)=>{
+            if(item.name == room){
+                item.visible = false
+            }
+        })
+    }
+
+    function add(room){
+        let rmBtn = document.getElementById(room).children[0]
+        let addBtn = document.getElementById(room).children[1]
+        rmBtn.style.display = 'block'
+        addBtn.style.display = 'none'
+        group.children.forEach((item)=>{
+            if(item.name == room){
+                item.visible = true
+            }
+        })
+    }
 
 </script>
 
