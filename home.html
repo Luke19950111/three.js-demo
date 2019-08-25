@@ -65,6 +65,9 @@
         <li id="southroom"><button onClick="remove('southroom')">隐藏南房</button><button onClick="add('southroom')" style="display:none">显示南房</button></li>
         <li id="zhaobi"><button onClick="remove('zhaobi')">隐藏照壁</button><button onClick="add('zhaobi')" style="display:none">显示照壁</button></li>
         <li id="ground"><button onClick="remove('ground')">隐藏地面</button><button onClick="add('ground')" style="display:none">显示地面</button></li>
+        <li id="litLight"><button onClick="turnOnLight('litLight')">开个小灯</button><button onClick="turnOffLight('litLight')" style="display:none">关个小灯</button></li>
+        <li id="bigLight"><button onClick="turnOnLight('bigLight')">开个大灯</button><button onClick="turnOffLight('bigLight')" style="display:none">关个大灯</button></li>
+        <li id="supLight"><button onClick="turnOnLight('supLight')">无敌大灯</button><button onClick="turnOffLight('supLight')" style="display:none">无敌关灯</button></li>
     </ol>
 </body>
 <script>
@@ -76,6 +79,9 @@
     var controls
     var stats = initStats()
     var group
+    var litLight
+    var bigLight
+    var supLight
 
     function init(params) {
         initScene()
@@ -116,9 +122,13 @@
         scene.add(new THREE.AmbientLight(0xffffff));
         let spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(400, 800, 400);
-        var pointLight = new THREE.PointLight( 0xfffff, 10, 100 );
-        pointLight.position.set( 0, 0, 0 );
-        scene.add( pointLight );
+        litLight = new THREE.PointLight( 0xfffff, 10, 100 );
+        litLight.position.set( 0, 0, 0 );
+        bigLight = new THREE.PointLight( 0xfffff, 100, 100 );
+        bigLight.position.set( 0, 60, 0 );
+        supLight = new THREE.PointLight( 0xfffff, 100, 300 );
+        supLight.position.set( 0, 60, 0 );
+        // scene.add( pointLight );
         scene.add(spotLight);
     }
 
@@ -348,6 +358,34 @@
                 item.visible = true
             }
         })
+    }
+
+    function turnOnLight(light){
+        let rmBtn = document.getElementById(light).children[0]
+        let addBtn = document.getElementById(light).children[1]
+        rmBtn.style.display = 'none'
+        addBtn.style.display = 'block'
+        if(light == 'litLight'){
+            scene.add(litLight)
+        }else if(light == 'bigLight'){
+            scene.add(bigLight)
+        }else{
+            scene.add(supLight)
+        }
+    }
+
+    function turnOffLight(light){
+        let rmBtn = document.getElementById(light).children[0]
+        let addBtn = document.getElementById(light).children[1]
+        rmBtn.style.display = 'block'
+        addBtn.style.display = 'none'
+        if(light == 'litLight'){
+            scene.remove(litLight)
+        }else if(light == 'bigLight'){
+            scene.remove(bigLight)
+        }else{
+            scene.remove(supLight)
+        }
     }
 
 </script>
