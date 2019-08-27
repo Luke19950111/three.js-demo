@@ -159,15 +159,15 @@
         group = new THREE.Group()
 
         let objLoader = new THREE.OBJLoader();
-        // var material = new THREE.MeshLambertMaterial({color: 0x5C3A21})
-        // objLoader.setMaterials(material);
         objLoader.load('./obj/zhaobi.obj', function (object) {
-            var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
-            object.children.forEach(function (child) {
-                child.material = material;
-                child.geometry.computeFaceNormals();
-                child.geometry.computeVertexNormals();
-            });
+            // var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
+            // object.children.forEach(function (child) {
+            //     child.material = material;
+            //     child.geometry.computeFaceNormals();
+            //     child.geometry.computeVertexNormals();
+            // });
+            object.children[0].material = new THREE.MeshLambertMaterial({color: 0xffd700, side:THREE.DoubleSide});
+            object.children[1].material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
             object.name = 'zhaobi'
             group.add(object);
         });
