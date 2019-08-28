@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="ie=edge"
+    >
+    <title>myHome</title>
+    <style>
+        body{
+            margin: 0;
+        }
+        ol,li{
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        ol{
+            position: absolute;
+            top: 50px;
+            left: 10px;
+        }
+    </style>
+
+    <!-- <script src="https://cdn.bootcss.com/three.js/r59/three.js"></script> -->
+    <script
+        type="text/javascript"
+        src="./js/three.js"
+    ></script>
+    <script
+        type="text/javascript"
+        src="./js/OBJLoader.js"
+    ></script>
+    <script
+        type="text/javascript"
+        src="./js/MTLLoader.js"
+    ></script>
+    <script src="./js/OrbitControls.js"></script>
+    <script src="./js/TrackballControls.js"></script>
+    <script src="./js/stats.js"></script>
+    <script src="./js/dat.Gui.min.js"></script>
+</head>
+
+<!-- <body onload="init()">
+    <canvas
+        id="mainCanvas"
+        width="800px"
+        height="600px"
+    ></canvas>
+</body> -->
+<body>
+    <!-- <ol>
+        <li id="roof"><button onClick="remove('roof')">隐藏屋顶</button><button onClick="add('roof')" style="display:none">显示屋顶</button></li>
+        <li id="mainf2"><button onClick="remove('mainf2')">隐藏二楼</button><button onClick="add('mainf2')" style="display:none">显示二楼</button></li>
+        <li id="mainf1"><button onClick="remove('mainf1')">隐藏一楼</button><button onClick="add('mainf1')" style="display:none">显示一楼</button></li>
+        <li id="southroomroof"><button onClick="remove('southroomroof')">隐藏南顶</button><button onClick="add('southroomroof')" style="display:none">显示南顶</button></li>
+        <li id="stairs"><button onClick="remove('stairs')">隐藏楼梯</button><button onClick="add('stairs')" style="display:none">显示楼梯</button></li>
+        <li id="passage"><button onClick="remove('passage')">隐藏过道</button><button onClick="add('passage')" style="display:none">显示过道</button></li>
+        <li id="southroom"><button onClick="remove('southroom')">隐藏南房</button><button onClick="add('southroom')" style="display:none">显示南房</button></li>
+        <li id="zhaobi"><button onClick="remove('zhaobi')">隐藏照壁</button><button onClick="add('zhaobi')" style="display:none">显示照壁</button></li>
+        <li id="ground"><button onClick="remove('ground')">隐藏地面</button><button onClick="add('ground')" style="display:none">显示地面</button></li>
+        <li id="litLight"><button onClick="turnOnLight('litLight')">开个小灯</button><button onClick="turnOffLight('litLight')" style="display:none">关个小灯</button></li>
+        <li id="bigLight"><button onClick="turnOnLight('bigLight')">开个大灯</button><button onClick="turnOffLight('bigLight')" style="display:none">关个大灯</button></li>
+        <li id="supLight"><button onClick="turnOnLight('supLight')">无敌大灯</button><button onClick="turnOffLight('supLight')" style="display:none">无敌关灯</button></li>
+    </ol> -->
+</body>
+<script>
+    var renderer
+    var scene
+    var camera
+    var mesh
+    var id
+    var controls
+    var stats = initStats()
+    var group
+    var litLight
+    var bigLight
+    var supLight
+    var reflectiveMaterial
+    var allRooms
+    var textureCube
+
+    function init(params) {
+        skybox()
+        initScene()
+        initCamera()
+        initRender()
+        initLight()
+        initControls()
+        initContent()
+        initGui()
+
+        renderer.render(scene, camera)
+    }
+
+    //场景
+    function initScene(){
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color( 0xAAAAAA )
+        // scene.background = new THREE.Color(0x050505);
+        // scene.fog = new THREE.FogExp2(0x050505, 0.005);
+        scene.background = textureCube
+    }
+
+    //相机
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 80000);
+        camera.position.set(0, 90, 220);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        scene.add(camera)
+    }
+
+    //渲染器
+    function initRender() {
+        renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+    }
+
+    //灯光
+    function initLight() {
+        // scene.add(new THREE.AmbientLight(0xffffff));
+        let spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(400, 800, 400);
+        litLight = new THREE.PointLight( 0xfffff, 10, 100 );
+        litLight.position.set( 0, 0, 0 );
+        bigLight = new THREE.PointLight( 0xfffff, 100, 100 );
+        bigLight.position.set( 0, 60, 0 );
+        supLight = new THREE.PointLight( 0xfffff, 100, 300 );
+        supLight.position.set( 0, 60, 0 );
+        // scene.add( pointLight );
+        // scene.add(spotLight);
+        ambientLight = new THREE.AmbientLight( 0x333333 );	// 0.2
+		light = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
+        light.position.set(1, 0, 1)
+        light2 = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
+        light2.position.set(-1, 0, -1)
+        light3 = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
+        light3.position.set(0, 1, 0)
+        light4 = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
+        light4.position.set(0, -1, 0)
+        scene.add(ambientLight)
+        scene.add(light)
+        scene.add(light2)
+        scene.add(light3)
+        scene.add(light4)
+    }
+
+    //控制器
+    function initControls() {
+        /* 地图控件 */
+        controls = new THREE.MapControls(camera, renderer.domElement);
+        /* 属性参数 */
+        controls.enableDamping = true;// 启用动态阻尼时需要一个动画循环
+        controls.dampingFactor = 0.30;
+        controls.screenSpacePanning = false;// 若为 true 则可以平移
+        // controls.maxDistance = 400;
+        // controls.minDistance = 100;
+        // controls.maxPolarAngle = Math.PI / 2.2;
+        controls.autoRotate = false;
+        controls.enableZoom = true;
+	    controls.zoomSpeed = 2.0;
+        controls.minZoom = Infinity;
+	    controls.maxZoom = Infinity;
+        controls.enablePan = true;
+	    controls.panSpeed = 1.0;
+    }
+
+    //调试插件
+
+    //场景中的内容
+    function initContent() {
+        group = new THREE.Group()
+
+        let objLoader = new THREE.OBJLoader();
+        objLoader.load('./obj/zhaobi.obj', function (object) {
+            // var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
+            // object.children.forEach(function (child) {
+            //     child.material = material;
+            //     child.geometry.computeFaceNormals();
+            //     child.geometry.computeVertexNormals();
+            // });
+            // object.children[0].material = new THREE.MeshLambertMaterial({color: 0xffd700, side:THREE.DoubleSide});
+            // object.children[1].material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
+            object.name = 'zhaobi'
+            group.add(object);
+        });
+        objLoader.load('./obj/southroom.obj', function (object) {
+            // var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
+            // object.children.forEach(function (child) {
+            //     child.material = material;
+            //     child.geometry.computeFaceNormals();
+            //     child.geometry.computeVertexNormals();
+            // });
+            object.name = 'southroom'
+            group.add(object);
+        });
+        objLoader.load('./obj/southroomroof.obj', function (object) {
+            // var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
+            // object.children.forEach(function (child) {
+            //     child.material = material;
+            //     child.geometry.computeFaceNormals();
+            //     child.geometry.computeVertexNormals();
+            // });
+            object.name = 'southroomroof'
+            group.add(object);
+        });
+        objLoader.load('./obj/stairs.obj', function (object) {
+            // var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
+            // object.children.forEach(function (child) {
+            //     child.material = material;
+            //     child.geometry.computeFaceNormals();
+            //     child.geometry.computeVertexNormals();
+            // });
+            object.name = 'stairs'
+            group.add(object);
+        });
+        objLoader.load('./obj/passage.obj', function (object) {
+            // var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
+            // object.children.forEach(function (child) {
+            //     child.material = material;
+            //     child.geometry.computeFaceNormals();
+            //     child.geometry.computeVertexNormals();
+            // });
+            object.name = 'passage'
+            group.add(object);
+        });
+        objLoader.load('./obj/mainf1.obj', function (object) {
+            // var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
+            // object.children.forEach(function (child) {
+            //     child.material = material;
+            //     child.geometry.computeFaceNormals();
+            //     child.geometry.computeVertexNormals();
+            // });
+            object.name = 'mainf1'
+            group.add(object);
+        });
+        objLoader.load('./obj/mainf2.obj', function (object) {
+            // var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
+            // object.children.forEach(function (child) {
+            //     child.material = material;
+            //     child.geometry.computeFaceNormals();
+            //     child.geometry.computeVertexNormals();
+            // });
+
+            object.name = 'mainf2'
+            group.add(object);
+        });
+        objLoader.load('./obj/roof.obj', function (object) {
+            // var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
+            // object.children.forEach(function (child) {
+            //     child.material = material;
+            //     child.geometry.computeFaceNormals();
+            //     child.geometry.computeVertexNormals();
+            // });
+            object.name = 'roof'
+            group.add(object);
+        });
+        objLoader.load('./obj/ground.obj', function (object) {
+            // var material = new THREE.MeshLambertMaterial({color: 0x444444, side:THREE.DoubleSide});
+            // object.children.forEach(function (child) {
+            //     child.material = material;
+            //     child.geometry.computeFaceNormals();
+            //     child.geometry.computeVertexNormals();
+            // });
+            object.name = 'ground'
+            group.add(object);
+        });
+        // console.log(group, 'gggg')
+        // group.traverse(function(child) {
+        //     console.log(child instanceof THREE.Mesh, 'aa')
+        // if (child instanceof THREE.Mesh) {
+        //     console.log(child, 'xxx')
+        //     child.material = reflectiveMaterial;
+        // }
+        // });
+        // console.log(group, 'gg')
+        // scene.add(group)
+
+        var geometry = new THREE.BoxBufferGeometry( 100, 100, 100 )
+        console.log(reflectiveMaterial, 'rrrr')
+        allRooms = new THREE.Mesh(
+            geometry,
+            reflectiveMaterial
+        )
+        scene.add(allRooms)
+
+
+
+
+
+        var sphere = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 30),
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                wireframe: true
+            })
+        );
+
+        scene.add(sphere)
+
+
+        //坐标轴
+        let material1 = new THREE.LineBasicMaterial( { color: 0x0000ff } )
+        let geometry1 = new THREE.Geometry();
+        geometry1.vertices.push(new THREE.Vector3( 100, 0, 0) );
+        geometry1.vertices.push(new THREE.Vector3( 0, 0, 0) );
+        geometry1.vertices.push(new THREE.Vector3( 0, 100, 0) );
+        let line1 = new THREE.Line( geometry1, material1 )
+        scene.add(line1)
+        let material2 = new THREE.LineBasicMaterial( { color: 0xffffff } )
+        let geometry2 = new THREE.Geometry();
+        geometry2.vertices.push(new THREE.Vector3( 0, 0, 0) );
+        geometry2.vertices.push(new THREE.Vector3( 0, 0, 100) );
+        let line2 = new THREE.Line( geometry2, material2 )
+        scene.add(line2)
+
+    }
+
+    //调试插件
+    function initGui() {
+        guiControls = new function () {
+            this.screenSpacePanning = controls.screenSpacePanning;
+            this.autoRotate = controls.autoRotate;
+            this.rotateSpeed = controls.autoRotateSpeed;
+            this.reset = function () {
+                controls.reset();
+            };
+            this.getPolarAngle = function () {
+                alert('极坐标:'+controls.getPolarAngle());
+            };
+            this.getAzimuthalAngle = function () {
+                alert('方位角:'+controls.getAzimuthalAngle());
+            };
+        };
+        var gui = new dat.GUI();
+        gui.add(guiControls,'screenSpacePanning').onChange(function (e) {
+            controls.screenSpacePanning = e;
+        });
+        gui.add(guiControls,'autoRotate').onChange(function (e) {
+            controls.autoRotate = e;
+        });
+        gui.add(guiControls,'rotateSpeed').onChange(function (e) {
+            controls.autoRotateSpeed = e;
+        });
+        gui.add(guiControls,'reset');
+        gui.add(guiControls,'getPolarAngle');
+        gui.add(guiControls,'getAzimuthalAngle');
+    }
+
+    //性能插件
+    function initStats(){
+        let stats = new Stats()
+        document.body.appendChild(stats.domElement);
+        return stats;
+    }
+
+    //循环渲染
+    function animate(){
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+        controls.update()
+        stats.update()
+    }
+
+    // 初始加载
+    (function(){
+        init()
+        animate()
+    })()
+
+    function remove(room){
+        let rmBtn = document.getElementById(room).children[0]
+        let addBtn = document.getElementById(room).children[1]
+        rmBtn.style.display = 'none'
+        addBtn.style.display = 'block'
+        group.children.forEach((item)=>{
+            if(item.name == room){
+                item.visible = false
+            }
+        })
+    }
+
+    function add(room){
+        let rmBtn = document.getElementById(room).children[0]
+        let addBtn = document.getElementById(room).children[1]
+        rmBtn.style.display = 'block'
+        addBtn.style.display = 'none'
+        group.children.forEach((item)=>{
+            if(item.name == room){
+                item.visible = true
+            }
+        })
+    }
+
+    function turnOnLight(light){
+        let rmBtn = document.getElementById(light).children[0]
+        let addBtn = document.getElementById(light).children[1]
+        rmBtn.style.display = 'none'
+        addBtn.style.display = 'block'
+        if(light == 'litLight'){
+            scene.add(litLight)
+        }else if(light == 'bigLight'){
+            scene.add(bigLight)
+        }else{
+            scene.add(supLight)
+        }
+    }
+
+    function turnOffLight(light){
+        let rmBtn = document.getElementById(light).children[0]
+        let addBtn = document.getElementById(light).children[1]
+        rmBtn.style.display = 'block'
+        addBtn.style.display = 'none'
+        if(light == 'litLight'){
+            scene.remove(litLight)
+        }else if(light == 'bigLight'){
+            scene.remove(bigLight)
+        }else{
+            scene.remove(supLight)
+        }
+    }
+
+    function skybox(){
+        let path = "./img/cube/"
+		let urls = [
+			path + "px.jpg", path + "nx.jpg",
+			path + "py.jpg", path + "ny.jpg",
+			path + "pz.jpg", path + "nz.jpg"
+		]
+        textureCube = new THREE.CubeTextureLoader().load( urls )
+        console.log(textureCube, 'tt')
+        textureCube.format = THREE.RGBFormat
+        // textureCube.mapping = THREE.CubeRefractionMapping
+        let materialColor = new THREE.Color();
+		materialColor.setRGB( 1.0, 1.0, 1.0 );
+        reflectiveMaterial = new THREE.MeshPhongMaterial( { color: materialColor, envMap: textureCube, side: THREE.DoubleSide } )
+    }
+
+</script>
+
+</html>
