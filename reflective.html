@@ -111,7 +111,8 @@
     //相机
     function initCamera() {
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 80000);
-        camera.position.set(-90, 0, 220);
+        // camera.position.set(-90, 0, 220);
+        camera.position.set(0, 20, 220);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         scene.add(camera)
     }
@@ -169,7 +170,8 @@
         // controls.maxDistance = 400;
         // controls.minDistance = 100;
         // controls.maxPolarAngle = Math.PI / 2.2;
-        controls.autoRotate = false;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 10.0;
         controls.enableZoom = true;
 	    controls.zoomSpeed = 2.0;
         controls.minZoom = Infinity;
