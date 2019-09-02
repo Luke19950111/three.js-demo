@@ -330,10 +330,18 @@
         stats.update()
     }
 
+    // 窗口变动触发的方法
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
     // 初始加载
     (function(){
         init()
         animate()
+        addEventListener('resize', onWindowResize, false)
     })()
 
     function remove(room){
