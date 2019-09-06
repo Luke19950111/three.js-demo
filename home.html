@@ -82,6 +82,7 @@
     var litLight
     var bigLight
     var supLight
+    var selectObject
 
     function init(params) {
         initScene()
@@ -395,6 +396,51 @@
             scene.remove(supLight)
         }
     }
+
+    addEventListener('dblclick', onMouseClick, false)
+
+    function onMouseClick(event) {
+        const _ = this
+        // 获取 raycaster 和所有模型相交的数组，其中的元素按照距离排序，越近的越靠前
+
+        // 声明 raycaster 和 mouse 变量
+        let raycaster = new THREE.Raycaster();
+        let mouse = new THREE.Vector2();
+
+        // 通过鼠标点击位置,计算出 raycaster 所需点的位置,以屏幕为中心点,范围 -1 到 1
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        let standardVector  = new THREE.Vector3(mouse.x, mouse.y, 0.5);//标准设备坐标
+        let worldVector = standardVector.unproject(camera);//世界坐标
+
+
+        //通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
+        raycaster.setFromCamera(mouse, camera);
+
+        // 获取与raycaster射线相交的数组集合，其中的元素按照距离排序，越近的越靠前
+        let intersects = raycaster.intersectObjects(group.children, true);
+
+        console.log(intersects, 'iiiii')
+        // 获取选中最近的 Mesh 对象
+        if (intersects.length != 0 && intersects[0].object instanceof THREE.Mesh) {
+          selectObject = intersects[0].object;
+          changeMaterial(selectObject)
+        }
+       
+        
+
+      }
+
+      function changeMaterial(object) {
+
+        var material = new THREE.MeshLambertMaterial({
+          color: 0xffffff * Math.random(),
+          transparent: object.material.transparent ? false : true,
+          opacity: 0.8
+        });
+        object.material = material;
+      }
 
 </script>
 
